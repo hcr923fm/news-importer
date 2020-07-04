@@ -8,14 +8,20 @@ import socket
 FFMPEG_FILE_LIST_PATH=os.path.join("C:\\Presenter Storage\\RNH Automation","NewsFiles.txt")
 NEWS_FILE_NAME_1_MIN="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\news.mp3"
 NEWS_FILE_NAME_2_MIN="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\twominnews.mp3"
+NEWS_FILE_NAME_BREAKING="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\BREAKINGNEWS.mp3"
 NEWS_WAV_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\RNHNews.wav"
 NEWS_BUMPER_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\NewsOut.wav"
 NEWS_OUTPUT_NOMETA_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\NewsNoMeta.wav"
 NEWS_OUTPUT_META_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\NewsMeta.wav"
 
 #epoch = datetime.datetime.utcfromtimestamp(0)
-
-NEWS_MP3_FILE_PATH = NEWS_FILE_NAME_2_MIN if os.path.exists(NEWS_FILE_NAME_2_MIN) and (datetime.now()- datetime.fromtimestamp(os.path.getmtime(NEWS_FILE_NAME_2_MIN))).total_seconds() < 3600 else NEWS_FILE_NAME_1_MIN
+NEWS_MP3_FILE_PATH = None
+if os.path.exists(NEWS_FILE_NAME_BREAKING):
+	NEWS_MP3_FILE_PATH = NEWS_FILE_NAME_BREAKING
+elif os.path.exists(NEWS_FILE_NAME_2_MIN):
+	NEWS_MP3_FILE_PATH=NEWS_FILE_NAME_2_MIN
+else:
+	NEWS_MP3_FILE_PATH=NEWS_FILE_NAME_1_MIN
 
 # First, convert the MP3 news to WAV
 
