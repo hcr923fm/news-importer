@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from cdputils import cdpwavefile
 import socket
 import tempfile
+from time import sleep
 
 FFMPEG_FILE_LIST_PATH = os.path.join(
     "C:\\Presenter Storage\\RNH Automation", "NewsFiles.txt")
@@ -135,9 +136,18 @@ os.remove(NEWS_WITH_OUTSTING_NOMETA_FILE_PATH)
 os.remove(NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH)
 
 # And finally, import it to Myriad
+print "Importing cart 15000 (no 'IN' jingle)"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("192.168.0.4", 6950))
-s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",15000\n""".format(
+s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",15000,Delete\n""".format(
     audioFilePath=NEWS_WITH_OUTSTING_WITHMETA_FILE_PATH))
+s.close()
+
+print "Waiting for Myriad..."
+sleep(5)
+
+print "Importing cart 1 (full news)"
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(("192.168.0.4", 6950))
 s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",1,Delete\n""".format(
     audioFilePath=NEWS_WITH_INSTING_OUTSTING_WITHMETA_FILE_PATH))
