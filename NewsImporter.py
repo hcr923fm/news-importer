@@ -5,6 +5,7 @@ import wave
 from datetime import datetime, timedelta
 from cdputils import cdpwavefile
 import socket
+import tempfile
 
 FFMPEG_FILE_LIST_PATH = os.path.join(
     "C:\\Presenter Storage\\RNH Automation", "NewsFiles.txt")
@@ -21,19 +22,25 @@ NEWS_WITH_INSTING_OUTSTING_WITHMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Auto
 
 
 def concatAudioFiles(files, outputFile):
-    with open(FFMPEG_FILE_LIST_PATH, 'w',) as f:
+    audio_file_list = tempfile.mkstemp(suffix=".txt")
+    # with open(FFMPEG_FILE_LIST_PATH, 'w',) as f:
+    with os.fdopen(audio_file_list[0], "w") as f:
         for audioFile in files:
             f.write("file '{0}'\r\n".format(audioFile))
 
-        subprocess.Popen(["ffmpeg",
-                          "-f", "concat",
-                          "-safe", "0",
-                          "-i", FFMPEG_FILE_LIST_PATH,
-                          "-c", "copy",
-                          #"-q:a", "2",
-                          "-y",
-                          outputFile
-                          ], shell=False).wait()
+    subprocess.Popen(["ffmpeg",
+                      "-f", "concat",
+                      "-safe", "0",
+                      "-i", audio_file_list[1],
+                      "-c", "copy",
+                      #"-q:a", "2",
+                      "-y",
+                      outputFile
+                      ], shell=False).wait()
+
+    # audio_file_list[0].close()
+
+    os.remove(audio_file_list[1])
 
 
 def setAudioFileMeta(input_file, output_file, set_intro=False):
@@ -71,10 +78,7 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
         <appver>1.0</appver>
         <userdef></userdef>
         <zerodbref>0</zerodbref>
-        <posttimers>
-            <timer type="INTe">{inteTime}</timer>
-            <timer type="SEG1">{segTime}</timer>
-        </posttimers>
+        <posttimers><timer type="SEG1">{segTime}</timer></posttimers>
         <url></url>
     </cart>""".format(hourTop=(datetime.now()+timedelta(hours=1)).strftime("%H:00"),
                       inDate=datetime.now().strftime("%Y/%m/%d"),
@@ -118,15 +122,14 @@ concatAudioFiles([NEWS_WAV_FILE_PATH, NEWS_BUMPER_OUT_FILE_PATH],
 concatAudioFiles([NEWS_BUMPER_IN_FILE_PATH, NEWS_WAV_FILE_PATH,
                   NEWS_BUMPER_OUT_FILE_PATH], NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH)
 
-os.remove(FFMPEG_FILE_LIST_PATH)
-os.remove(NEWS_WAV_FILE_PATH)
+# os.remove(FFMPEG_FILE_LIST_PATH)
 
 # Now calculate the offset for the extro/SEG1 marker (2 secs from end)
 setAudioFileMeta(NEWS_WITH_OUTSTING_NOMETA_FILE_PATH,
                  NEWS_WITH_OUTSTING_WITHMETA_FILE_PATH)
 
 setAudioFileMeta(NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH,
-                 NEWS_WITH_INSTING_OUTSTING_WITHMETA_FILE_PATH)
+                 NEWS_WITH_INSTING_OUTSTING_WITHMETA_FILE_PATH, True)
 
 os.remove(NEWS_WITH_OUTSTING_NOMETA_FILE_PATH)
 os.remove(NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH)
