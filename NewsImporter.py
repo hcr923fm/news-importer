@@ -8,7 +8,7 @@ import socket
 FFMPEG_FILE_LIST_PATH=os.path.join("C:\\Presenter Storage\\RNH Automation","NewsFiles.txt")
 NEWS_FILE_NAME_1_MIN="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\news.mp3"
 NEWS_FILE_NAME_2_MIN="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\twominnews.mp3"
-NEWS_FILE_NAME_BREAKING="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\breakingnews.mp3"
+NEWS_FILE_NAME_BREAKING="C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\BREAKINGNEWS.mp3"
 NEWS_WAV_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\RNHNews.wav"
 NEWS_BUMPER_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\NewsOut.wav"
 NEWS_OUTPUT_NOMETA_FILE_PATH="C:\\Presenter Storage\\RNH Automation\\NewsNoMeta.wav"
@@ -102,4 +102,5 @@ os.remove(NEWS_OUTPUT_NOMETA_FILE_PATH)
 # And finally, import it to Myriad
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("192.168.0.4", 6950))
-s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",15000,Delete\n""".format(audioFilePath=NEWS_OUTPUT_META_FILE_PATH))
+s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",15000\n""".format(audioFilePath=NEWS_OUTPUT_META_FILE_PATH))
+s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",2,Delete\n""".format(audioFilePath=NEWS_OUTPUT_META_FILE_PATH))
