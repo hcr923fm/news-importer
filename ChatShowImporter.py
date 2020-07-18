@@ -9,7 +9,7 @@ from cdputils import cdpwavefile
 YTDL_PATH = "C:\\Presenter Storage\\RNH Automation\\youtube-dl.exe"
 CHAT_SHOW_DL_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\ChatShowFull.aac"
 CHAT_SHOW_DL_WAV_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\ChatShowFull.wav"
-CHAT_SHOW_TRIMMMED_PATH = "C:\\Presenter Storage\\RNH Automation\\ChatShowTrimStartEnd.wav"
+CHAT_SHOW_TRIMMED_PATH = "C:\\Presenter Storage\\RNH Automation\\ChatShowTrimStartEnd.wav"
 CHAT_SHOW_TRIMMED_META_PATH = "C:\\Presenter Storage\\RNH Automation\\ChatShowTrimStartEnd.wav"
 
 
@@ -94,7 +94,7 @@ print "Normalizing audio"
 normalized = pydub.effects.normalize(split[0],)
 
 print "Saving chat show"
-normalized.export(CHAT_SHOW_TRIMMMED_PATH, "wav")
+normalized.export(CHAT_SHOW_TRIMMED_PATH, "wav")
 
 os.remove(CHAT_SHOW_DL_FILE_PATH)
 os.remove(CHAT_SHOW_DL_WAV_FILE_PATH)
