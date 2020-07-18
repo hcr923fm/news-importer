@@ -88,7 +88,7 @@ Popen([
 audio = pydub.AudioSegment.from_wav(CHAT_SHOW_DL_WAV_FILE_PATH)
 
 print "Loaded audio, searching for silence"
-split = pydub.silence.split_on_silence(audio, 3000, -50, 500, 250)
+split = pydub.silence.split_on_silence(audio, 3000, -50, 100, 250)
 
 print "Normalizing audio"
 normalized = pydub.effects.normalize(split[0],)
@@ -99,11 +99,11 @@ normalized.export(CHAT_SHOW_TRIMMMED_PATH, "wav")
 os.remove(CHAT_SHOW_DL_FILE_PATH)
 os.remove(CHAT_SHOW_DL_WAV_FILE_PATH)
 
-print "Setting Myriad Metadata"
-setAudioFileMeta(CHAT_SHOW_TRIMMMED_PATH, CHAT_SHOW_TRIMMED_META_PATH, True)
+#print "Setting Myriad Metadata"
+#setAudioFileMeta(CHAT_SHOW_TRIMMMED_PATH, CHAT_SHOW_TRIMMED_META_PATH, True)
 
 print "Importing into Myriad"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("192.168.0.4", 6950))
 s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",{cartNum},Delete\n""".format(
-    audioFilePath=CHAT_SHOW_TRIMMED_META_PATH, cartNum=14995))
+    audioFilePath=CHAT_SHOW_TRIMMED_PATH, cartNum=14995))
