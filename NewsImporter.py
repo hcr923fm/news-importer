@@ -5,8 +5,8 @@ import wave
 from datetime import datetime, timedelta
 from cdputils import cdpwavefile
 import socket
-import tempfile
 from time import sleep
+import pydub
 
 FFMPEG_FILE_LIST_PATH = os.path.join(
     "C:\\Presenter Storage\\RNH Automation", "NewsFiles.txt")
@@ -20,28 +20,6 @@ NEWS_WITH_OUTSTING_NOMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\Ne
 NEWS_WITH_OUTSTING_WITHMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsWithOutMeta.wav"
 NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsWithInOutNoMeta.wav"
 NEWS_WITH_INSTING_OUTSTING_WITHMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsWithInOutMeta.wav"
-
-
-def concatAudioFiles(files, outputFile):
-    audio_file_list = tempfile.mkstemp(suffix=".txt")
-    # with open(FFMPEG_FILE_LIST_PATH, 'w',) as f:
-    with os.fdopen(audio_file_list[0], "w") as f:
-        for audioFile in files:
-            f.write("file '{0}'\r\n".format(audioFile))
-
-    subprocess.Popen(["ffmpeg",
-                      "-f", "concat",
-                      "-safe", "0",
-                      "-i", audio_file_list[1],
-                      "-c", "copy",
-                      #"-q:a", "2",
-                      "-y",
-                      outputFile
-                      ], shell=False).wait()
-
-    # audio_file_list[0].close()
-
-    os.remove(audio_file_list[1])
 
 
 def setAudioFileMeta(input_file, output_file, set_intro=False):
@@ -97,7 +75,6 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
     cdpFile.WritePCMWaveFile(output_file)
 
 
-#epoch = datetime.datetime.utcfromtimestamp(0)
 NEWS_MP3_FILE_PATH = None
 if os.path.exists(NEWS_FILE_NAME_BREAKING):
     NEWS_MP3_FILE_PATH = NEWS_FILE_NAME_BREAKING
@@ -106,26 +83,20 @@ elif os.path.exists(NEWS_FILE_NAME_2_MIN):
 else:
     NEWS_MP3_FILE_PATH = NEWS_FILE_NAME_1_MIN
 
-# First, convert the MP3 news to WAV
-
-subprocess.Popen(["ffmpeg",
-                  "-i", NEWS_MP3_FILE_PATH,
-                  "-c:a", "pcm_s16le",
-                  "-ar", "44100",
-                  "-y",
-                  NEWS_WAV_FILE_PATH
-                  ], shell=False).wait()
-
 # Now concat the files
-concatAudioFiles([NEWS_WAV_FILE_PATH, NEWS_BUMPER_OUT_FILE_PATH],
-                 NEWS_WITH_OUTSTING_NOMETA_FILE_PATH)
+news_in = pydub.AudioSegment.from_wav(NEWS_BUMPER_IN_FILE_PATH)
+news_out = pydub.AudioSegment.from_wav(NEWS_BUMPER_OUT_FILE_PATH)
+news_content = pydub.AudioSegment.from_file(NEWS_MP3_FILE_PATH, "mp3")
 
-concatAudioFiles([NEWS_BUMPER_IN_FILE_PATH, NEWS_WAV_FILE_PATH,
-                  NEWS_BUMPER_OUT_FILE_PATH], NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH)
-
-# os.remove(FFMPEG_FILE_LIST_PATH)
+news_with_out_nometa = news_content.append(news_out)
+news_with_in_out_nometa = news_in.append(news_with_out_nometa, 500)
 
 # Now calculate the offset for the extro/SEG1 marker (2 secs from end)
+
+news_with_out_nometa.export(NEWS_WITH_OUTSTING_NOMETA_FILE_PATH, "wav")
+news_with_in_out_nometa.export(
+    NEWS_WITH_INSTING_OUTSTING_NOMETA_FILE_PATH, "wav")
+
 setAudioFileMeta(NEWS_WITH_OUTSTING_NOMETA_FILE_PATH,
                  NEWS_WITH_OUTSTING_WITHMETA_FILE_PATH)
 
