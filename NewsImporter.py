@@ -13,7 +13,6 @@ FFMPEG_FILE_LIST_PATH = os.path.join(
 NEWS_FILE_NAME_1_MIN = "C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\news.mp3"
 NEWS_FILE_NAME_2_MIN = "C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\twominnews.mp3"
 NEWS_FILE_NAME_BREAKING = "C:\\Users\\hcr-myriad-server\\Dropbox\\RNH-bulletins\\BREAKINGNEWS.mp3"
-NEWS_WAV_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\RNHNews.wav"
 NEWS_BUMPER_IN_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsIn.wav"
 NEWS_BUMPER_OUT_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsOut.wav"
 NEWS_WITH_OUTSTING_NOMETA_FILE_PATH = "C:\\Presenter Storage\\RNH Automation\\NewsWithOutNoMeta.wav"
@@ -34,9 +33,9 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
     wavFile.close()
 
     segueSamplesFromEnd = sampleRate*segueSecsFromEnd
-    segueSamplesFromStart = sampleCount-segueSamplesFromEnd
-    introSamplesFromStart = round(
-        sampleRate*introSecsFromStart) if set_intro else 0
+    segueSamplesFromStart = int(round(sampleCount-segueSamplesFromEnd))
+    introSamplesFromStart = int(round(
+        sampleRate*introSecsFromStart)) if set_intro else 0
 
     xml = """<?xml version=\"1.0\" ?>
     <cart>
@@ -57,7 +56,9 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
         <appver>1.0</appver>
         <userdef></userdef>
         <zerodbref>0</zerodbref>
-        <posttimers><timer type="SEG1">{segTime}</timer></posttimers>
+        <posttimers><timer type="SEG1">{segTime}</timer>
+        <timer type="INTe">{inteTime}</timer>
+        </posttimers>
         <url></url>
     </cart>""".format(hourTop=(datetime.now()+timedelta(hours=1)).strftime("%H:00"),
                       inDate=datetime.now().strftime("%Y/%m/%d"),
