@@ -1,0 +1,3 @@
+[submodule "cdputils"]
+	path = cdputils
+	url = https://github.com/hcr923fm/cdputils.git
