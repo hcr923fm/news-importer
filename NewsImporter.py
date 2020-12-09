@@ -56,9 +56,7 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
         <appver>1.0</appver>
         <userdef></userdef>
         <zerodbref>0</zerodbref>
-        <posttimers><timer type="SEG1">{segTime}</timer>
-        <timer type="INTe">{inteTime}</timer>
-        </posttimers>
+        <posttimers><timer type="SEG1">{segTime}</timer><timer type="INTe">{inteTime}</timer></posttimers>
         <url></url>
     </cart>""".format(hourTop=(datetime.now()+timedelta(hours=1)).strftime("%H:00"),
                       inDate=datetime.now().strftime("%Y/%m/%d"),
