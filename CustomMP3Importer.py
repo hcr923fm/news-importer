@@ -35,8 +35,8 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
     xml = """<?xml version=\"1.0\" ?>
     <cart>
         <version>0101</version>
-        <title>RNH News {hourTop}</title>
-        <artist>Radio NewsHub</artist>
+        <title>{}</title>
+        <artist></artist>
         <cutnum></cutnum>
         <clientid></clientid>
         <category>NEWS</category>
@@ -53,7 +53,9 @@ def setAudioFileMeta(input_file, output_file, set_intro=False):
         <zerodbref>0</zerodbref>
         <posttimers><timer type="SEG1">{segTime}</timer><timer type="INTe">{inteTime}</timer></posttimers>
         <url></url>
-    </cart>""".format(hourTop=(datetime.now()+timedelta(hours=1)).strftime("%H:00"),
+    </cart>""".format(title=os.path.basename(input_file)
+                      hourTop=(datetime.now()+timedelta(hours=1)
+                               ).strftime("%H:00"),
                       inDate=datetime.now().strftime("%Y/%m/%d"),
                       inTime=datetime.now().strftime("%H:%M:%S"),
                       outDate=(datetime.now()+timedelta(hours=1)
