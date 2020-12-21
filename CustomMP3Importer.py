@@ -85,6 +85,6 @@ os.remove(AUDIO_AS_WAV_FILE_PATH)
 print "Importing to cart {0}".format(DESTINATION_CART)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("192.168.0.4", 6950))
-s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",{destCart}\n""".format(
+s.send("""AUDIOWALL IMPORTFILE "{audioFilePath}",{destCart},Delete\n""".format(
     audioFilePath=AUDIO_AS_WAV_META_FILE_PATH, destCart=DESTINATION_CART))
 s.close()
