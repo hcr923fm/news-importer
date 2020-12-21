@@ -11,8 +11,8 @@ import sys
 
 AUDIO_FILE_PATH = sys.argv[1]
 DESTINATION_CART = sys.argv[2]
-AUDIO_AS_WAV_FILE_PATH = str.join([AUDIO_FILE_PATH, ".wav"])
-AUDIO_AS_WAV_META_FILE_PATH = os.path.join(os.path.dirname(AUDIO_AS_WAV_FILE_PATH), str.join(
+AUDIO_AS_WAV_FILE_PATH = "".join([AUDIO_FILE_PATH, ".wav"])
+AUDIO_AS_WAV_META_FILE_PATH = os.path.join(os.path.dirname(AUDIO_AS_WAV_FILE_PATH), "".join(
     [os.path.basename(AUDIO_AS_WAV_FILE_PATH).split(".")[0], "-meta-", ".wav"]))
 
 
